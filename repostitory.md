@@ -5,6 +5,7 @@
 
 - webアプリケーションのバックエンドをちょっと勉強した人
 - MVCをちょっと理解した人
+- Repositoryパターンについてざっくり知りたい、イメージを持ちたい人
 
   
 ## Repostiroryパターンとは
@@ -96,9 +97,9 @@ Repositoryパターンは従来のMVCでコントローラが担っていたサ�
 
 ```
 
-### 従来のMVCのときのControllerとの違い
+## 従来のMVCのときのControllerとの違い
 
-#### 従来のController
+### 従来のController
 
 従来のMVCではControllerは以下のような役割を担っていました。
 
@@ -109,10 +110,11 @@ Repositoryパターンは従来のMVCでコントローラが担っていたサ�
 ビジネスロジックと聞くとあまり聞き慣れないかもしれませんが、データを取得してからレスポンスするまでのデータ処理のことだと思っておいてください。詳しく知りたい方は[こちら](https://qiita.com/os1ma/items/25725edfe3c2af93d735)を参考にしてみてください。 
 
 
-#### この構成のデメリット
+### この構成のデメリット
 
 このように一つのクラスが複数の役割を持つのは[単一責任の原則](https://qiita.com/conkon326/items/1ce5a4e5b8430c4e26d5)に反していて、コードの拡張や保守がしにくくなってしまいます。要は一つのクラスに多くの処理がまとまっているとデバッグ等がしにくくなるということです。今のコントローラには三つも機能があるのでデバッグもしにくくなるわけです。
 
+#### UserController.php
 ```php:UserController.php
 
 @RestController
@@ -155,6 +157,7 @@ Repositoryパターンではこれを以下のように分けてあげます
 
 このように分けてあげることでそれぞれのクラスが責任を一つずつ負うことになり、拡張性、保守性が向上します。
 
+#### UserController.php
 ```php:UserController.php
 
 @RestController
@@ -195,6 +198,7 @@ public class UserController {
 
 ```
 
+#### UserService.php
 ```php:UserService.php
 public class UserService {
     private UserRepository userRepository;
@@ -222,6 +226,7 @@ public class UserService {
 
 ```
 
+#### UserRepository.php
 ```php:UserRepository.php
 public interface UserRepository {
     User findById(int id);
@@ -232,6 +237,7 @@ public interface UserRepository {
 
 ```
 
+#### UserRepositoryImpl.php
 ```php:UserRepositoryImpl.php
 public class UserRepositoryImpl implements UserRepository {
     private List<User> users = new ArrayList<>();
@@ -259,7 +265,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
 ```
-##### Repository Interfaceの役割
+### Repository Interfaceの役割
 
 クラス図を見るとRepository Interfaceが定義されています。ただwebアプリケーションをそのまま実装するとこのインターフェースは役割が無い様に見えると思います。しかし、複数のデータベースを実装するときにこのインターフェースはその役割を果たします。
 このように複数DBを使ったり切り替える場合にインターフェースを定義しておくと保守性がさらに向上します
@@ -289,5 +295,5 @@ public class UserRepositoryImpl implements UserRepository {
             ・・・それぞれのDBに接続
 ````
 
-### まとめ
+## まとめ
 以上、簡単なRepositoryパターンのまとめでした！本来はもっと奥深いものだったりしますがまずはその触りになれればと思います！
